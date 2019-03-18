@@ -11,7 +11,7 @@ const GET_AUTH = gql`
   }
 }
 `
-
+// HOC component. Look in index.js how you can use it to protect a single component
 export default (ProtectedRoute) => {
   class AuthHOC extends Component {
 

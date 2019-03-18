@@ -30,9 +30,6 @@ class Nav extends React.Component {
         <Menu.Item key="/">
           <Link href='/'><a><Icon type="home" /><span>Home</span></a></Link>
         </Menu.Item>
-        <Menu.Item key="/launches">
-          <Link href='/launches'><a><Icon type="bars" /><span>Test list</span></a></Link>
-        </Menu.Item>
         {loginItem}
       </Menu>
     )

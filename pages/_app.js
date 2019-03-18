@@ -8,7 +8,7 @@ import { hasSignedIn } from '../utils/requireSignedin'
 
 
 class MyApp extends App {
-
+  // This function runs before opening any page
   static async getInitialProps({ Component, router, ctx }) {
 
     let pageProps = {}

@@ -19,7 +19,7 @@ module.exports = withCSS(antdLessLoader({
   },
   lessLoaderOptions: {
     javascriptEnabled: true,
-    modifyVars: {
+    modifyVars: { // this aproach works w/o problems
       "@primary-color": "#1DA57A",
     },
   },

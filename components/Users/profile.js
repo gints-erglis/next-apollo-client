@@ -1,13 +1,19 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react';
 import gql from 'graphql-tag'
 import Register from "./register";
 
-class Profile extends Component {
-  render () {
-    return (
-      <p>Profils</p>
-    )
-  }
+function Profile() {
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
 }
 
 export default Profile;

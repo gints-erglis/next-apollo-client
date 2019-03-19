@@ -7,6 +7,28 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 // To handle a network connection errors check this solution
 //https://github.com/molindo/react-apollo-network-status
 
+const authLink = new ApolloLink((operation, forward) => {
+  // Run this only on client side
+  if (typeof window !== 'undefined') {
+
+    //localStorage.setItem('auth_token', '1234567890');
+    // Retrieve the authorization token from local storage.
+    const token = localStorage.getItem('auth_token');
+    if(token) {
+      operation.setContext({
+        headers: {
+          authorization: `Basic ${token}`
+        }
+      });
+    }
+
+    console.log(`Basic ${token}`);
+  }
+
+  // Call the next link in the middleware chain.
+  return forward(operation);
+});
+
 const defaultOptions = {
   // watchQuery: {
   //   fetchPolicy: 'cache-first',
@@ -28,15 +50,16 @@ const httpLink = new HttpLink({
 });
 
 // We can combine multiple links
-const link = ApolloLink.from([
-  httpLink,
-]);
+// const link = ApolloLink.from([
+//   authLink,
+//   httpLink,
+// ]);
 
 export default withApollo(({ ctx, headers, initialState }) => (
 
   new ApolloClient({
     cache: new InMemoryCache().restore(initialState || {}),
-    link,
+    link: authLink.concat(httpLink), // Chain it with the HttpLink,
     defaultOptions
   })
 ))

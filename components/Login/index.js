@@ -9,6 +9,7 @@ const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      token
       user {
         id
       }
@@ -42,9 +43,10 @@ class LoginForm extends Component {
         mutation={LOGIN_MUTATION}
         variables={this.state}
         onCompleted={(data) => {
-          if (data.login.user) {
+          if (data.login.token)
+            localStorage.setItem('auth_token', data.login.token);
+          if (data.login.user)
             redirectTo('/')
-          }
         }}
       >
         {(login,{error, loading}) => (

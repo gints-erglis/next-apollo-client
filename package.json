@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "less-loader": "^4.1.0",
+    "react-apollo-hooks": "^0.4.3",
     "react-apollo-network-status": "^1.1.0"
   }
 }

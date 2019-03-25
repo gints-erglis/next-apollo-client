@@ -1,10 +1,11 @@
 import App, {Container} from 'next/app'
 import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider as ApolloProviderHooks } from "react-apollo-hooks"
 import ErrorPage from 'next/error'
 import withApollo from '../utils/withApollo'
 import 'isomorphic-fetch';
 import redirectTo from '../utils/redirectTo'
-import { hasSignedIn } from '../utils/requireSignedin'
+import { hasSignedIn, hasSignedInToken } from '../utils/requireSignedin'
 
 
 class MyApp extends App {
@@ -26,9 +27,17 @@ class MyApp extends App {
       ctx.res.statusCode = pageProps.statusCode
     }
 
+    // Check authentication if using a session cookie
     if (!(await hasSignedIn(ctx))) {
       if (! whitelist.includes(ctx.pathname))
       redirectTo('/login', { res: ctx.res, status: 301 })
+    }
+
+    // Check authentication if using a JWT
+    if (!(await hasSignedInToken(ctx))) {
+      console.log('Not authenticated by token')
+    } else {
+      console.log('Authenticated by token')
     }
 
     return { pageProps }
@@ -42,7 +51,9 @@ class MyApp extends App {
     return(
       <Container>
         <ApolloProvider client={apollo}>
-          <Component {...pageProps} />
+          <ApolloProviderHooks client={apollo}>
+            <Component {...pageProps} />
+          </ApolloProviderHooks>
         </ApolloProvider>
       </Container>
     )

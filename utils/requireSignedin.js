@@ -1,7 +1,8 @@
 
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
+import { useQuery } from "react-apollo-hooks"
 import gql from "graphql-tag";
 
 const GET_AUTH = gql`
@@ -11,6 +12,33 @@ const GET_AUTH = gql`
   }
 }
 `
+const GET_AUTH_TOKEN = gql`
+  query {
+  logedinToken {
+   ok
+  }
+}
+`
+
+// Hook useAuth
+export function useAuth() {
+
+  let isLoading = false;
+  let isLoggedin = false;
+
+  const { data, loading } = useQuery(GET_AUTH, {
+    options: {fetchPolicy: 'network-only'},
+    suspend: false
+  });
+  
+  if (loading) {
+    isLoading = true
+  } else {
+    isLoggedin = data.logedin.ok
+  }
+  return [isLoading, isLoggedin]
+}
+
 // HOC component. Look in index.js how you can use it to protect a single component
 export default (ProtectedRoute) => {
   class AuthHOC extends Component {
@@ -54,4 +82,9 @@ export default (ProtectedRoute) => {
 export async function hasSignedIn({ apolloClient }) {
   const { data } = await apolloClient.query({ query: GET_AUTH, fetchPolicy: 'no-cache' });
   return data.logedin.ok;
+}
+
+export async function hasSignedInToken({ apolloClient }) {
+  const { data } = await apolloClient.query({ query: GET_AUTH_TOKEN, fetchPolicy: 'no-cache' });
+  return data.logedinToken.ok;
 }

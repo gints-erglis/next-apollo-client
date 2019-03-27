@@ -6,18 +6,24 @@ import withApollo from '../utils/withApollo'
 import 'isomorphic-fetch';
 import redirectTo from '../utils/redirectTo'
 import { hasSignedIn, hasSignedInToken } from '../utils/requireSignedin'
+import { withRouter } from 'next/router'
+import { RouterContext } from '../utils/useRouter'
 
+
+const isServer = typeof window === 'undefined'
+
+// Temporary wrapper to use React 16.3 Context
+const InjectRouterContext = withRouter(({ router, children }) => {
+  return (
+    <RouterContext.Provider value={router}>{children}</RouterContext.Provider>
+  );
+});
 
 class MyApp extends App {
-  // This function runs before opening any page
+  // This function runs before opening any page and runs both - the client and server side
   static async getInitialProps({ Component, router, ctx }) {
 
     let pageProps = {}
-    let whitelist = [
-      '/',
-      '/login',
-      '/register',
-    ]
 
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
@@ -27,20 +33,30 @@ class MyApp extends App {
       ctx.res.statusCode = pageProps.statusCode
     }
 
-    // Check authentication if using a session cookie
-    if (!(await hasSignedIn(ctx))) {
-      if (! whitelist.includes(ctx.pathname))
-      redirectTo('/login', { res: ctx.res, status: 301 })
-    }
-
-    // Check authentication if using a JWT
-    if (!(await hasSignedInToken(ctx))) {
-      console.log('Not authenticated by token')
-    } else {
-      console.log('Authenticated by token')
-    }
-
     return { pageProps }
+  }
+
+  // This function runs only on client side
+  componentDidMount() {
+    // Use console.log(this.props) to get the idea what props are available
+    const { apollo, router } = this.props
+    const whitelist = [
+      '/',
+      '/login',
+      '/register',
+    ]
+    // An async function need to use await
+    async function checkAccess() {
+      const isAuth = await hasSignedIn({apolloClient: apollo})
+      if (!isAuth) {
+        if (! whitelist.includes(router.pathname))
+          console.log('redirect happens')
+          // As it's run on client side, router.push() is a way to do redirect
+          router.push(`/login`)
+      }
+    }
+    checkAccess()
+
   }
 
   render () {
@@ -51,9 +67,11 @@ class MyApp extends App {
     return(
       <Container>
         <ApolloProvider client={apollo}>
-          <ApolloProviderHooks client={apollo}>
-            <Component {...pageProps} />
-          </ApolloProviderHooks>
+            <ApolloProviderHooks client={apollo}>
+              <InjectRouterContext>
+                <Component {...pageProps} />
+              </InjectRouterContext>
+            </ApolloProviderHooks>
         </ApolloProvider>
       </Container>
     )

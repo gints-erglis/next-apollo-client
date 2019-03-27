@@ -9,6 +9,7 @@ const GET_AUTH = gql`
   query {
   logedin {
    ok
+   id
   }
 }
 `
@@ -25,18 +26,20 @@ export function useAuth() {
 
   let isLoading = false;
   let isLoggedin = false;
+  let userId = '';
 
   const { data, loading } = useQuery(GET_AUTH, {
     options: {fetchPolicy: 'network-only'},
     suspend: false
   });
-  
+
   if (loading) {
     isLoading = true
   } else {
     isLoggedin = data.logedin.ok
+    userId = data.logedin.id
   }
-  return [isLoading, isLoggedin]
+  return [isLoading, isLoggedin, userId ]
 }
 
 // HOC component. Look in index.js how you can use it to protect a single component

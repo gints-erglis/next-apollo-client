@@ -1,21 +1,21 @@
 import React from 'react'
 import Link from 'next/link'
+//import { Link } from '../../routes'
 import { Menu, Icon } from 'antd';
-import withAuthorization from '../../utils/requireSignedin.js'
-import { withRouter } from 'next/router'
+import { useAuth } from '../../utils/requireSignedin'
+import { useRouter } from '../../utils/useRouter'
 
-class Nav extends React.Component {
+function Nav() {
 
-  render() {
-    const { router, isLoggedin } = this.props
-    const isLoggedIn = isLoggedin()
-    let loginItem
+  const [isLoading, isLoggedin, userId] = useAuth();
+  const router = useRouter();
+  let loginItem
 
-    if (!isLoggedIn) {
+    if (!isLoggedin) {
       loginItem = <Menu.Item key="/login"><Link href='/login'><a><Icon type="login" /><span>Login</span></a></Link></Menu.Item>
     } else {
       loginItem = [
-        <Menu.Item key="/profile"><Link href='/profile'><a><Icon type="user" /><span>Accaunt</span></a></Link></Menu.Item>,
+        <Menu.Item key="/profile"><Link href={`/profile?id=${userId}`} as={`/user/${userId}`}><a><Icon type="user" /><span>Accaunt</span></a></Link></Menu.Item>,
         <Menu.Item key="/logout"><Link href='/logout'><a><Icon type="logout" /><span>Logout</span></a></Link></Menu.Item>
       ]
     }
@@ -33,7 +33,6 @@ class Nav extends React.Component {
         {loginItem}
       </Menu>
     )
-  }
-}
 
-export default withRouter(withAuthorization(Nav))
+}
+export default Nav

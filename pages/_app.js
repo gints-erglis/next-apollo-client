@@ -4,7 +4,6 @@ import { ApolloProvider as ApolloProviderHooks } from "react-apollo-hooks"
 import ErrorPage from 'next/error'
 import withApollo from '../utils/withApollo'
 import 'isomorphic-fetch';
-import redirectTo from '../utils/redirectTo'
 import { hasSignedIn, hasSignedInToken } from '../utils/requireSignedin'
 import { withRouter } from 'next/router'
 import { RouterContext } from '../utils/useRouter'

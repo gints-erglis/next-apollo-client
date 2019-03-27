@@ -1,9 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
-//import { Link } from '../../routes'
 import { Menu, Icon } from 'antd';
 import { useAuth } from '../../utils/requireSignedin'
 import { useRouter } from '../../utils/useRouter'
+
+// Only hooks are used here
 
 function Nav() {
 
@@ -15,6 +16,7 @@ function Nav() {
       loginItem = <Menu.Item key="/login"><Link href='/login'><a><Icon type="login" /><span>Login</span></a></Link></Menu.Item>
     } else {
       loginItem = [
+        // Notice the href attribute, it is important set up the id parameter there
         <Menu.Item key="/profile"><Link href={`/profile?id=${userId}`} as={`/user/${userId}`}><a><Icon type="user" /><span>Accaunt</span></a></Link></Menu.Item>,
         <Menu.Item key="/logout"><Link href='/logout'><a><Icon type="logout" /><span>Logout</span></a></Link></Menu.Item>
       ]

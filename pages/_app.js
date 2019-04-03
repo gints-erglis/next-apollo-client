@@ -37,8 +37,9 @@ class MyApp extends App {
 
   // This function runs only on client side
   componentDidMount() {
+    console.log(this.props)
     // Use console.log(this.props) to get the idea what props are available
-    const { apollo, router } = this.props
+    const { apollo, router, isLoading } = this.props
     const whitelist = [
       '/',
       '/login',
@@ -49,17 +50,17 @@ class MyApp extends App {
       const isAuth = await hasSignedIn({apolloClient: apollo})
       if (!isAuth) {
         if (! whitelist.includes(router.pathname))
-          console.log('redirect happens')
           // As it's run on client side, router.push() is a way to do redirect
           router.push(`/login`)
       }
     }
+
     checkAccess()
 
   }
 
   render () {
-    const {Component, pageProps, apollo, statusCode } = this.props
+    const {Component, pageProps, apollo, statusCode, router } = this.props
     if (statusCode) {
       return <ErrorPage statusCode={statusCode} />
     }
@@ -68,7 +69,7 @@ class MyApp extends App {
         <ApolloProvider client={apollo}>
             <ApolloProviderHooks client={apollo}>
               <InjectRouterContext>
-                <Component {...pageProps} />
+                  <Component {...pageProps} key={router.route} />
               </InjectRouterContext>
             </ApolloProviderHooks>
         </ApolloProvider>

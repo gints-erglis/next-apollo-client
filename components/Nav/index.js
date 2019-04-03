@@ -18,7 +18,7 @@ function Nav() {
       loginItem = [
         // Notice the href attribute, it is important set up the id parameter there
         <Menu.Item key="/profile"><Link href={`/profile?id=${userId}`} as={`/user/${userId}`}><a><Icon type="user" /><span>Accaunt</span></a></Link></Menu.Item>,
-        <Menu.Item key="/logout"><Link href='/logout'><a><Icon type="logout" /><span>Logout</span></a></Link></Menu.Item>
+        <Menu.Item key="/logout"><Link href={`/logout`} ><a><Icon type="logout" /><span>Logout</span></a></Link></Menu.Item>
       ]
     }
     return (

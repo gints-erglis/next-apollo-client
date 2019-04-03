@@ -20,7 +20,8 @@ class MainLayout extends React.Component {
   render() {
     return (
       <Wrapper className="wrapper">
-      <Layout>
+        {/* hasSider - useful in ssr avoid style flickering */}
+      <Layout hasSider >
         <Sider
           collapsible
           collapsed={this.state.collapsed}
@@ -29,7 +30,7 @@ class MainLayout extends React.Component {
           <div className="logo" />
           <Nav/>
         </Sider>
-        <Layout>
+        <Layout className="main-content">
           <Header style={{ background: '#fff', padding: 0 }}>
           </Header>
           <Content style={{
